@@ -1,32 +1,21 @@
-const SIGN_IN = "signIn";
-const SIGN_OUT = "signOut";
-const SIGN_UP = "signUp";
+import {createAction, createReducer} from '@reduxjs/toolkit'
 
+export const signIn = createAction('auth/singIn')
+export const signOut = createAction('auth/singOut')
 
-export const signIn = (user) => {
-    return {
-        type: SIGN_IN,
-        payload: user
-    }
+const initialState = {
+    user: {},
+    isAuthenticated: false
 }
 
-export const signOut = () => {
-    return {
-        type: SIGN_OUT,
+const authReducer = createReducer(initialState, {
+    [signIn.type] : (state, action) => {
+        return { user: action.payload.user, isAuthenticated: true };
+    },
+
+    [signOut.type] : () => {
+        return { user: {}, isAuthenticated: false };
     }
-}
+})
 
-const initialState = []
-
-function reducer(state = initialState, action) {
-    switch (action.type) {
-        case SIGN_IN:
-            return { ...state, user: action.payload.user, isAuthenticated: true };
-        case SIGN_OUT:
-            return { ...state, user: {}, isAuthenticated: false };
-        default:
-            return state;
-    }
-}
-
-export default reducer;
+export default authReducer;

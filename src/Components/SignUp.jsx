@@ -1,10 +1,13 @@
 import React, { useState, useContext } from 'react'
 import {Link, useNavigate } from 'react-router-dom'
 import Input from './Input';
-import client from './axiosAuth';
+import client from "../utils/axiosAuth";
+import { useDispatch } from 'react-redux';
+import { signIn } from '../store/auth';
 
 function SignUp() {
-  const [state, dispatch] = useContext( Auth )
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -18,19 +21,12 @@ function SignUp() {
     setData({ ...data, [name]: value });
   };
 
-  const navigate = useNavigate()
-
-
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       const response = await client.post('/sign-up', data)
       if(response.status === 200) {
-        dispatch({
-          type: SIGN_UP, 
-          payload: response.data.payload
-        })
-        
+        dispatch(signIn({ user: response.data.payload }))
         navigate('/')
         console.log(response.data)
       }
